@@ -1,0 +1,48 @@
+spring:
+  aop:
+    proxyTargetClass: true
+  application:
+    name: search-apigateway
+
+
+
+zuul:
+  routes:
+    search-service: /search/**
+    oauth-service:
+    uaa-service:
+      sensitiveHeaders:
+      path: /sg/**
+      stripPrefix: false
+  add-proxy-headers: true
+
+security:
+  # Disable Spring Boot basic authentication
+  basic:
+    enabled: false
+  oauth2:
+    sso:
+      loginPath: /login
+    client:
+      accessTokenUri: http://localhost:${server.port}/sg/oauth/token
+      userAuthorizationUri: /sg/oauth/authorize
+      clientId: sg
+      clientSecret: sgoauth
+    resource:
+      jwt:
+        keyValue: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAibZ75+pazxs9XSF43eblCGimJd6gkp+kLTrdwjd/SJcjz/SyHOB7FFn2iiq0dX91lHANY0uuKKpj5MupGMWWUEtBFQJNckBWlPUsN2X2zLAMdLwvVg0f9q0jCReCi7Kl9cYM1avEwqXYx1AuxPRT/1OWoHB+FzGCbIroYgEcchx1BF21sSfAqrQrk3x2mzDiseFhXHObPoRM1VTDbGt/9xsDGs2W4Q8+3TAsUgz4ALZiQs2twbYUWqeLPjJ67Mlalv6NwWK04esL86vrtD+96niouVcS995Bkh+InAXBZ5wFxxvOfvKclUKqbu7PbQHLsQcBY6AFWnRG93Z4zOfyZwIDAQAB
+          -----END PUBLIC KEY-----
+      id: openid
+      serviceId: ${PREFIX:}resource
+      
+eureka:
+  instance:
+    hostname: 127.0.0.1
+
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+      
+
